@@ -129,25 +129,27 @@ function renderTargetHint(winningState) {
 }
 
 // Renderiza as peças no tabuleiro
+// Renderiza as peças no tabuleiro
 function renderBoard() {
     boardElement.innerHTML = '';
 
     if (currentMode === 'alfabeto') {
-        boardElement.className = `grid grid-cols-4 gap-2 bg-amber-200 p-3 rounded-2xl shadow-inner mb-4 max-w-sm mx-auto`;
+        boardElement.className = `grid grid-cols-4 gap-1.5 bg-amber-200 p-2.5 rounded-2xl shadow-inner mb-3 max-w-sm mx-auto`;
     } else {
-        boardElement.className = `grid grid-cols-3 gap-2 bg-amber-200 p-3 rounded-2xl shadow-inner aspect-square mb-4 max-w-xs mx-auto`;
+        boardElement.className = `grid grid-cols-3 gap-2 bg-amber-200 p-3 rounded-2xl shadow-inner aspect-square mb-3 max-w-xs mx-auto`;
     }
 
     currentState.forEach((value, index) => {
         const tile = document.createElement('button');
-        
+
         if (value === '') {
             tile.className = 'bg-amber-200/50 rounded-xl cursor-default aspect-square';
         } else {
             const isLetter = value.match(/[A-Z]/i);
             const bgColor = isLetter ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : 'bg-pink-400 hover:bg-pink-500 text-white';
-            
-            const fontSize = currentMode === 'alfabeto' ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl';
+
+            // Tamanho de fonte ajustado para caber bem no celular no modo alfabeto
+            const fontSize = currentMode === 'alfabeto' ? 'text-xl sm:text-2xl' : 'text-3xl sm:text-4xl';
 
             tile.className = `${bgColor} font-black ${fontSize} rounded-xl shadow-md flex items-center justify-center transition-all duration-150 transform active:scale-95 aspect-square`;
             tile.textContent = value;
