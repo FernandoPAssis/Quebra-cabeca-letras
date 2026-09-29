@@ -11,66 +11,69 @@
     <link href="fonts_googleapis.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 </head>
-<body class="bg-amber-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans select-none">
+<body class="bg-amber-100 min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 font-sans select-none">
 
-	<!-- Container Principal (Aumentado para acomodar as 9 colunas do alfabeto) -->
-	<div class="bg-white p-4 sm:p-8 rounded-3xl shadow-2xl border-4 border-amber-300 max-w-2xl w-full text-center">        
+    <!-- Container Principal ajustado -->
+    <div class="bg-white p-3 sm:p-6 rounded-3xl shadow-2xl border-4 border-amber-300 max-w-sm sm:max-w-md w-full text-center my-auto">
+
         <!-- TELA 1: MENU PRINCIPAL -->
         <div id="menu-screen">
-            <h1 class="text-3xl sm:text-4xl font-extrabold text-indigo-600 mb-3">
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-indigo-600 mb-3">
                 ✏️ Quebra-Cabeça das Letras 🌟
             </h1>
-            <p class="text-gray-600 font-medium mb-8">Escolha como quer jogar hoje:</p>
+            <p class="text-gray-600 font-medium mb-6 text-sm sm:text-base">Escolha como quer jogar hoje:</p>
 
-            <div class="flex flex-col gap-4">
-                <button onclick="startGame('vogais')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-black text-xl py-4 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-3">
+            <div class="flex flex-col gap-3 sm:gap-4">
+                <button onclick="startGame('vogais')" class="bg-indigo-500 hover:bg-indigo-600 text-white font-black text-lg sm:text-xl py-3.5 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-3">
                     🅰️ A, E, I, O, U (Vogais)
                 </button>
-							
-			<button onclick="startGame('alfabeto')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-xl py-4 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-3">
-				🔤 Alfabeto Completo (A a Z)
-			</button>
+
+                <button onclick="startGame('alfabeto')" class="bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg sm:text-xl py-3.5 px-6 rounded-2xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-3">
+                    🔤 Alfabeto Completo (A a Z)
+                </button>
             </div>
         </div>
 
         <!-- TELA 2: TABULEIRO DO JOGO -->
-        <div id="game-screen" class="hidden">
+        <div id="game-screen" class="hidden flex flex-col w-full">
+
             <!-- Cabeçalho -->
-            <div class="flex justify-between items-center mb-4">
-                <button onclick="showMenu()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-3 rounded-xl transition text-sm">
+            <div class="flex justify-between items-center mb-3">
+                <button onclick="showMenu()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-1.5 px-3 rounded-xl transition text-xs sm:text-sm">
                     🏠 Menu
                 </button>
-                <h2 id="game-title" class="text-xl font-black text-indigo-600"></h2>
+                <h2 id="game-title" class="text-base sm:text-lg font-black text-indigo-600"></h2>
             </div>
 
             <!-- Painel de Informações -->
-            <div class="flex justify-between items-center bg-amber-50 p-3 rounded-2xl mb-4 border-2 border-amber-200">
+            <div class="flex justify-between items-center bg-amber-50 p-2.5 rounded-2xl mb-3 border-2 border-amber-200">
                 <div class="text-left">
-                    <span class="text-xs uppercase font-bold text-amber-700 tracking-wider">Movimentos</span>
-                    <p id="moves-count" class="text-2xl font-black text-amber-900">0</p>
+                    <span class="text-[10px] uppercase font-bold text-amber-700 tracking-wider block">Movimentos</span>
+                    <p id="moves-count" class="text-xl sm:text-2xl font-black text-amber-900 leading-none">0</p>
                 </div>
-                <button id="restart-btn" onclick="initGame()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-xl shadow-md transition active:scale-95">
+                <button id="restart-btn" onclick="initGame()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-1.5 px-3 sm:px-4 rounded-xl shadow-md text-xs sm:text-sm transition active:scale-95">
                     🔄 Recomeçar
                 </button>
             </div>
 
-<!-- Tabuleiro (A classe do grid muda dinamicamente via JS) -->
-            <div id="board" class="grid gap-2 bg-amber-200 p-3 rounded-2xl shadow-inner aspect-square mb-4">
+            <!-- Tabuleiro (Grade montada via JS) -->
+            <div id="board" class="grid gap-1.5 bg-amber-200 p-2 rounded-2xl shadow-inner w-full mb-3">
                 <!-- Peças geradas via JS -->
             </div>
 
             <!-- Mensagem de Vitória -->
-            <div id="win-message" class="hidden bg-emerald-100 border-2 border-emerald-400 p-4 rounded-2xl text-emerald-800 font-bold text-lg animate-bounce mb-4">
+            <div id="win-message" class="hidden bg-emerald-100 border-2 border-emerald-400 p-2.5 rounded-2xl text-emerald-800 font-bold text-sm sm:text-base animate-bounce mb-3">
                 🎉 Parabéns! Você organizou todas as letras! 🌟
             </div>
 
             <!-- Dica do Objetivo / Gabarito -->
-            <div id="game-target-hint" class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-3 text-center">
-                <p class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">🎯 Objetivo (Ordem Final):</p>
-                <div id="target-sequence" class="flex flex-wrap justify-center gap-1.5 text-sm sm:text-base font-black text-indigo-700">
+            <div id="game-target-hint" class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-2 sm:p-3 text-center">
+                <p class="text-[10px] sm:text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">🎯 Objetivo (Ordem Final):</p>
+                <div id="target-sequence" class="flex flex-wrap justify-center gap-1 text-xs sm:text-sm font-black text-indigo-700">
                     <!-- Gerado via JS -->
                 </div>
             </div>
+
         </div>
 
     </div>
