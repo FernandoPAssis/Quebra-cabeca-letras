@@ -1,0 +1,49 @@
+/* Previne seleção acidental de texto ao tocar rapidamente nas peças */
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent; /* Remove o quadrado azul do clique no Android */
+}
+
+/* Garante que o tabuleiro e peças não estoure a tela em celulares pequenos */
+#board {
+    max-width: 90vw;
+    max-height: 90vw;
+    touch-action: manipulation; /* Melhora o tempo de resposta do toque */
+}
+
+* {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    touch-action: manipulation;
+}
+
+/* Animações e gradientes customizados */
+.bg-mesh {
+    background-color: #0f172a;
+    background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.25) 0px, transparent 50%), radial-gradient(at 100% 0%, rgba(168, 85, 247, 0.25) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.2) 0px, transparent 50%), radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.2) 0px, transparent 50%);
+}
+
+.tile-transition {
+    transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tile-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.tile-correct {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+}
+
+/* Esconder elementos inativos */
+.hidden-screen {
+    display: none !important;
+}
