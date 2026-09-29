@@ -7,8 +7,8 @@ const MODES = {
         title: '✏️ Modo Vogais'
     },
     alfabeto: {
-        cols: 4, // 4 colunas por linha
-        rows: 7, // 7 linhas
+        cols: 4,
+        rows: 7,
         winningState: [
             'A', 'B', 'C', 'D',
             'E', 'F', 'G', 'H',
@@ -45,7 +45,7 @@ function startGame(modeKey) {
     menuScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     gameTitleElement.textContent = MODES[currentMode].title;
-    
+
     initGame();
 }
 
@@ -60,98 +60,57 @@ function initGame() {
     moves = 0;
     movesElement.textContent = moves;
     winMessageElement.classList.add('hidden');
-    
+
     const config = MODES[currentMode];
 
-    // Exibe a sequência-alvo como dica visual
     renderTargetHint(config.winningState);
 
-    // Gera um estado SEMPRE solvível partindo do estado final resolvido
+    // Gera o estado resolvível por movimentos válidos
     currentState = shuffleByValidMoves([...config.winningState], config.cols, 80);
 
     renderBoard();
 }
 
-/**
- * Embaralha o tabuleiro realizando apenas movimentos válidos a partir da posição inicial.
- * Isso garante matematicamente 100% de probabilidade de vitória!
- */
-function shuffleByValidMoves(stateArray, cols, movesCount) {
-    let emptyIdx = stateArray.indexOf('');
-
-    for (let i = 0; i < movesCount; i++) {
-        const neighbors = getValidNeighbors(emptyIdx, cols, stateArray.length);
-        const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
-
-        // Troca o espaço vazio com um vizinho válido
-        [stateArray[emptyIdx], stateArray[randomNeighbor]] = [stateArray[randomNeighbor], stateArray[emptyIdx]];
-        emptyIdx = randomNeighbor;
-    }
-
-    // Se por acaso terminar resolvido após o embaralhamento, faz mais alguns movimentos
-    if (isSolved(stateArray)) {
-        return shuffleByValidMoves(stateArray, cols, movesCount + 10);
-    }
-
-    return stateArray;
-}
-
-// Retorna os índices vizinhos válidos para mover no grid
-function getValidNeighbors(emptyIndex, cols, totalItems) {
-    const neighbors = [];
-    const row = Math.floor(emptyIndex / cols);
-    const col = emptyIndex % cols;
-
-    // Cima
-    if (row > 0) neighbors.push(emptyIndex - cols);
-    // Baixo
-    if (emptyIndex + cols < totalItems) neighbors.push(emptyIndex + cols);
-    // Esquerda
-    if (col > 0) neighbors.push(emptyIndex - 1);
-    // Direita
-    if (col < cols - 1) neighbors.push(emptyIndex + 1);
-
-    return neighbors;
-}
-
 // Renderiza a dica do objetivo (Gabarito)
 function renderTargetHint(winningState) {
     targetSequenceElement.innerHTML = '';
-    
+
     winningState.forEach(item => {
         if (item !== '') {
             const span = document.createElement('span');
-            span.className = 'bg-white border border-amber-300 px-2 py-0.5 rounded-lg shadow-sm';
+            span.className = 'bg-white border border-amber-300 px-1.5 py-0.5 rounded-lg shadow-sm';
             span.textContent = item;
             targetSequenceElement.appendChild(span);
         }
     });
 }
-
-// Renderiza as peças no tabuleiro
-// Renderiza as peças no tabuleiro
+// Renderiza as peças no tabuleiro ajustando a altura para caber sem rolagem
 function renderBoard() {
     boardElement.innerHTML = '';
 
     if (currentMode === 'alfabeto') {
-        boardElement.className = `grid grid-cols-4 gap-1.5 bg-amber-200 p-2.5 rounded-2xl shadow-inner mb-3 max-w-sm mx-auto`;
+        // Usa gap menor e largura máxima bem controlada
+        boardElement.className = `grid grid-cols-4 gap-1 sm:gap-1.5 bg-amber-200 p-1.5 sm:p-2 rounded-2xl shadow-inner w-full max-w-[320px] sm:max-w-[360px] mx-auto mb-2`;
     } else {
-        boardElement.className = `grid grid-cols-3 gap-2 bg-amber-200 p-3 rounded-2xl shadow-inner aspect-square mb-3 max-w-xs mx-auto`;
+        boardElement.className = `grid grid-cols-3 gap-2 bg-amber-200 p-2.5 sm:p-3 rounded-2xl shadow-inner w-full max-w-xs mx-auto aspect-square mb-2`;
     }
 
     currentState.forEach((value, index) => {
         const tile = document.createElement('button');
 
         if (value === '') {
-            tile.className = 'bg-amber-200/50 rounded-xl cursor-default aspect-square';
+            // No alfabeto usa altura compacta h-9/h-11, nas vogais usa aspect-square
+            const emptyShape = currentMode === 'alfabeto' ? 'h-9 sm:h-11' : 'aspect-square';
+            tile.className = `bg-amber-200/50 rounded-xl cursor-default ${emptyShape}`;
         } else {
             const isLetter = value.match(/[A-Z]/i);
             const bgColor = isLetter ? 'bg-indigo-500 hover:bg-indigo-600 text-white' : 'bg-pink-400 hover:bg-pink-500 text-white';
 
-            // Tamanho de fonte ajustado para caber bem no celular no modo alfabeto
-            const fontSize = currentMode === 'alfabeto' ? 'text-xl sm:text-2xl' : 'text-3xl sm:text-4xl';
+            // Define o formato: retângulo suave (h-9 / h-11) no alfabeto e quadrado nas vogais
+            const tileShape = currentMode === 'alfabeto' ? 'h-9 sm:h-11 w-full' : 'aspect-square w-full';
+            const fontSize = currentMode === 'alfabeto' ? 'text-lg sm:text-xl' : 'text-3xl sm:text-4xl';
 
-            tile.className = `${bgColor} font-black ${fontSize} rounded-xl shadow-md flex items-center justify-center transition-all duration-150 transform active:scale-95 aspect-square`;
+            tile.className = `${bgColor} font-black ${fontSize} ${tileShape} rounded-xl shadow-md flex items-center justify-center transition-all duration-150 transform active:scale-95`;
             tile.textContent = value;
             tile.addEventListener('click', () => moveTile(index));
         }
@@ -164,17 +123,17 @@ function renderBoard() {
 function moveTile(index) {
     const config = MODES[currentMode];
     const emptyIndex = currentState.indexOf('');
-    
+
     const isAdjacent = checkAdjacency(index, emptyIndex, config.cols);
 
     if (isAdjacent) {
         [currentState[index], currentState[emptyIndex]] = [currentState[emptyIndex], currentState[index]];
-        
+
         moves++;
         movesElement.textContent = moves;
-        
+
         renderBoard();
-        
+
         if (isSolved(currentState)) {
             winMessageElement.classList.remove('hidden');
             playWinSound();
@@ -192,13 +151,36 @@ function checkAdjacency(idx1, idx2, cols) {
     return (Math.abs(row1 - row2) + Math.abs(col1 - col2)) === 1;
 }
 
-// Embaralhador
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
+// Embaralha fazendo movimentos válidos (100% resolvível)
+function shuffleByValidMoves(stateArray, cols, movesCount) {
+    let emptyIdx = stateArray.indexOf('');
+
+    for (let i = 0; i < movesCount; i++) {
+        const neighbors = getValidNeighbors(emptyIdx, cols, stateArray.length);
+        const randomNeighbor = neighbors[Math.floor(Math.random() * neighbors.length)];
+
+        [stateArray[emptyIdx], stateArray[randomNeighbor]] = [stateArray[randomNeighbor], stateArray[emptyIdx]];
+        emptyIdx = randomNeighbor;
     }
-    return array;
+
+    if (isSolved(stateArray)) {
+        return shuffleByValidMoves(stateArray, cols, movesCount + 10);
+    }
+
+    return stateArray;
+}
+
+function getValidNeighbors(emptyIndex, cols, totalItems) {
+    const neighbors = [];
+    const row = Math.floor(emptyIndex / cols);
+    const col = emptyIndex % cols;
+
+    if (row > 0) neighbors.push(emptyIndex - cols);
+    if (emptyIndex + cols < totalItems) neighbors.push(emptyIndex + cols);
+    if (col > 0) neighbors.push(emptyIndex - 1);
+    if (col < cols - 1) neighbors.push(emptyIndex + 1);
+
+    return neighbors;
 }
 
 // Verifica vitória
@@ -207,12 +189,12 @@ function isSolved(state) {
     return state.every((val, idx) => val === win[idx]);
 }
 
-// Música/Sons de Vitória
+// Sons de Vitória
 function playWinSound() {
     try {
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         if (!AudioContext) return;
-        
+
         const ctx = new AudioContext();
         const notes = [261.63, 329.63, 392.00, 523.25];
         let time = ctx.currentTime;
